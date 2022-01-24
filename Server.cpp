@@ -12,6 +12,8 @@
 #include <pthread.h>
 #include <sys/time.h> 
 
+// compilation note: use ./a.out port# iterations
+
 const int BUFSIZE = 1500;
 
 struct thread_data {
@@ -24,23 +26,21 @@ void *serverThreadFunction(void *data_param) {
    char databuf[BUFSIZE]; // Allocate buffer
    struct timeval tInitial, tFinal;
    int count = 0;
-   gettimeofday(&tInitial, NULL); // Start timer
+
+   gettimeofday(&tInitial, NULL); // Start timer to track data-receiving time
    for (int i = 0; i < data->iterations; i++) {
       for(int nRead = 0; (nRead += read(data->sd, databuf, BUFSIZE - nRead)) < BUFSIZE; ++count);
       count++;
    }
    gettimeofday(&tFinal, NULL); // Stop timer
-   int x = write(data->sd, &count, sizeof(count));
-   // std::cerr << "Count: " << count << std::endl;
-   // std::cerr << "Server write() value: " << x << std::endl;
+   write(data->sd, &count, sizeof(count)); // Send number of reads to client as reponse
    // if (x < 0) {
    //    std::cerr << "Server: Problem with write: ";
    //    int errsv = errno;
    //    std::cerr << errsv << std::endl;
    // }
-   std::cout << "Connected with client." << std::endl;
+
    close(data->sd);
-   std::cout << "Connection terminated." << std::endl;
  
    // Calculate and print data receiving time in microseconds
    double tTotal = (tFinal.tv_sec - tInitial.tv_sec) * 1000000 + (tFinal.tv_usec - tInitial.tv_usec); // usec
@@ -51,6 +51,7 @@ void *serverThreadFunction(void *data_param) {
 }
 
 int main(int argc, char **argv) {
+// Program arguments (specified in command line)
    std::string serverPort = argv[1]; // server port number
    int iterations = std::stoi(argv[2]); // number of reads
 // Create TCP socket listening on port
@@ -94,6 +95,6 @@ int main(int argc, char **argv) {
       struct thread_data *data = new thread_data;
       data->iterations = iterations;
       data->sd = newSd;
-      int iret1 = pthread_create(&newThread, NULL, serverThreadFunction, (void*) data);
+      pthread_create(&newThread, NULL, serverThreadFunction, (void*) data);
    }
 }

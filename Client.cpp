@@ -13,32 +13,22 @@
 #include <sys/time.h> 
 #include <errno.h>
 
+// compilation note: use ./a.out port# hostname iterations nbufs bufsize test# 
+// nbufs * bufsize = 15 * 100, 30 * 50, and 60 * 25 
 
-void handleScenario(int scenario, int sd, int iterations int nbufs, int bufsize) {
+void handleScenario(timeval &tInitial, timeval &tFinal, int scenario, int sd, int iterations, int nbufs, int bufsize) {
    char databuf[nbufs][bufsize];
-   // struct timeval lapFinish; 
-   // std::cout << "Executing scenario " << scenario << std::endl;
    if (scenario == 1) {
-      // std::cout << "Scenario 1" << std::endl;
-      // gettimeofday(&tInitial, NULL); // Start round-trip timer
-      // gettimeofday(&lapStart, NULL); // Start lap timer
+      gettimeofday(&tInitial, NULL); // Start round-trip timer
       for (int i = 0; i < iterations; i++) {
          for (int j = 0; j < 15; j++) {
             write(sd, databuf[j], bufsize); // Sd: socket descriptor
-            // if (x < 0) {
-            //    std::cerr << "Client: Problem with write: ";
-            //    int errsv = errno;
-            //    std::cerr << errsv << std::endl;
-            // }
          }
-         // std::cerr << i << std::endl;
       }
    }
    else if (scenario == 2) {
-      int x;
-      // std::cout << "Scenario 2" << std::endl;
       char databuf[nbufs][bufsize];
-      // gettimeofday(&lapStart, NULL); // Start timer
+      gettimeofday(&tInitial, NULL); // Start round-trip timer
       for (int i = 0; i < iterations; i++) { 
          struct iovec vector[nbufs]; 
          for (int j = 0; j < nbufs; j++) { 
@@ -47,27 +37,25 @@ void handleScenario(int scenario, int sd, int iterations int nbufs, int bufsize)
          } 
          writev(sd, vector, nbufs); // sd: socket descriptor 
       } 
-      // std::cerr << "Finished scenario 2" << std::endl;
    }
    else {
-      // std::cout << "Scenario 3" << std::endl;
       char databuf[nbufs][bufsize];
-      // gettimeofday(&lapStart, NULL); // Start timer
+      gettimeofday(&tInitial, NULL); // Start round-trip timer
       for (int i = 0; i < iterations; i++){ 
          write(sd, databuf, nbufs * bufsize); // sd: socket descriptor 
       } 
-      // std::cerr << "Finished scenario 3" << std::endl;
    }
-
-   // gettimeofday(&lapFinish, NULL); // Stop timer
+   gettimeofday(&tFinal, NULL); // Lap timer to get data transmission time
 }
 
 int main(int argc, char **argv) {
+// Program arguments (specified in command line)
    std::string serverPort = argv[1]; // server port number
    std::string serverName = argv[2]; // server host name
    int iterations = std::stoi(argv[3]); // number of iterations to use in tests
-   int nbufs = std::stoi(arg[4]); // number of buffers
-   int bufsize = std::stoi(arg[5]) // data buffer size in bytes
+   int nbufs = std::stoi(argv[4]); // number of buffers
+   int bufsize = std::stoi(argv[5]); // data buffer size in bytes
+   int type = std::stoi(argv[6]); // type of data transmission to send  
 // Create new socket
    // Load address structs with getaddrinfo()
    struct addrinfo hints, *servinfo; 
@@ -75,48 +63,39 @@ int main(int argc, char **argv) {
    hints.ai_family = AF_UNSPEC; // Use IPv4 or IPv6, don't specify just one
    hints.ai_socktype = SOCK_STREAM; // Use TCP
 
-   // SYSTEM CALL -- may be necessary to check return values
    // Call getaddrinfor to update servInfo
    getaddrinfo(serverName.c_str(), serverPort.c_str(), &hints, &servinfo); 
 
-   for (int type = 1; type <= 3; type++) {
-      struct timeval tInitial, tFinal; 
-      // Open a new socket and establish a connection to the server
-      // Make a socket, bind it, and listen on it
-      int clientSd = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
+   struct timeval tInitial, tFinal; 
+   // Open a new socket and establish a connection to the server
+   // Make a socket, bind it, and listen on it
+   int clientSd = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
 
-      // Avoid "Address alread in use" error
-      int status = connect(clientSd, servinfo->ai_addr, servinfo->ai_addrlen);
-      // if (status < 0) {
-      //    std::cerr << "Failed to connect to server." << std::endl;
-      //    close(clientSd);
-      //    return -1;
-      // }
-      gettimeofday(&tInitial, NULL); // Start round-trip timer
-
-      handleScenario(type, clientSd, iterations); // Run test corresponding to transmission type
-
-      gettimeofday(&tFinal, NULL); // Lap timer to get data transmission time
-      // Calculate and print data transmission time in microseconds
-      double tLap = (tFinal.tv_sec - tInitial.tv_sec) * 1000000 + (tFinal.tv_usec - tInitial.tv_usec); // usec
-      std::cout << "Test " << type << ": data transmission time = " << tLap << " usec, ";
-
-      // Read server response
-      int z = read(clientSd, &count, sizeof(count));
-
-      gettimeofday(&tFinal, NULL); // Stop round-trip timer
-
-      // Calculate and print total round-trip time in microseconds
-      double tTotal = (tFinal.tv_sec - tInitial.tv_sec) * 1000000 + (tFinal.tv_usec - tInitial.tv_usec); // usec
-      std::cout << "round-trip time = " << tTotal << " usec, ";
-      std::cerr << "#reads = " << count << std::endl;
-
-      // if (z < 0) {
-      //    std::cerr << "Client: Problem with read: ";
-      //    int errsv2 = errno;
-      //    std::cerr << errsv2 << std::endl;
-      // }
-
+   // Avoid "Address alread in use" error
+   int status = connect(clientSd, servinfo->ai_addr, servinfo->ai_addrlen);
+   if (status < 0) {
+      std::cerr << "Failed to connect to server." << std::endl;
       close(clientSd);
-   }
+      return -1;
+   } 
+
+   gettimeofday(&tInitial, NULL); // Start round-trip timer
+
+   handleScenario(tInitial, tFinal, type, clientSd, iterations, nbufs, bufsize); // Run test
+
+   // Calculate and print data transmission time in microseconds
+   double tLap = (tFinal.tv_sec - tInitial.tv_sec) * 1000000 + (tFinal.tv_usec - tInitial.tv_usec); // usec
+   std::cout << "Test " << type << ": data transmission time = " << tLap << " usec, ";
+
+   int count = 0;
+   int z = read(clientSd, &count, sizeof(count)); // Read server response regarding number of reads
+
+   gettimeofday(&tFinal, NULL); // Stop round-trip timer
+
+   // Calculate and print total round-trip time in microseconds
+   double tTotal = (tFinal.tv_sec - tInitial.tv_sec) * 1000000 + (tFinal.tv_usec - tInitial.tv_usec); // usec
+   std::cout << "round-trip time = " << tTotal << " usec, ";
+   std::cerr << "#reads = " << count << std::endl;
+
+   close(clientSd);
 }
