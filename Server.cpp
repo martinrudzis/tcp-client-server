@@ -62,7 +62,6 @@ int main(int argc, char **argv) {
    hints.ai_socktype = SOCK_STREAM; // Use TCP
    hints.ai_flags = AI_PASSIVE; // Auto-fill my IP
 
-   // SYSTEM CALL -- may be necessary to check return values
    // Call getaddrinfor to update res
    getaddrinfo(NULL, serverPort.c_str(), &hints, &res);
 
@@ -83,7 +82,7 @@ int main(int argc, char **argv) {
       std::cout << "Error binding socket." << std::endl;
    }
    std::cout << "Listening for clients." << std::endl;
-   listen(serverSd, 20); // Listen to up to n connection requests
+   listen(serverSd, 50); // Listen to up to 50 concurrent connections
 
 // Accept incoming connection
    struct sockaddr_storage clientAddr;

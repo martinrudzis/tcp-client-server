@@ -13,21 +13,19 @@
 #include <sys/time.h> 
 #include <errno.h>
 
-// compilation note: use ./a.out port# hostname iterations nbufs bufsize test# 
-// nbufs * bufsize = 15 * 100, 30 * 50, and 60 * 25 
+// compilation note: use ./a.out port# hostname iterations nbufs bufsize test#
 
 void handleScenario(timeval &tInitial, timeval &tFinal, int scenario, int sd, int iterations, int nbufs, int bufsize) {
    char databuf[nbufs][bufsize];
    if (scenario == 1) {
       gettimeofday(&tInitial, NULL); // Start round-trip timer
       for (int i = 0; i < iterations; i++) {
-         for (int j = 0; j < 15; j++) {
+         for (int j = 0; j < nbufs; j++) {
             write(sd, databuf[j], bufsize); // Sd: socket descriptor
          }
       }
    }
    else if (scenario == 2) {
-      char databuf[nbufs][bufsize];
       gettimeofday(&tInitial, NULL); // Start round-trip timer
       for (int i = 0; i < iterations; i++) { 
          struct iovec vector[nbufs]; 
@@ -39,7 +37,6 @@ void handleScenario(timeval &tInitial, timeval &tFinal, int scenario, int sd, in
       } 
    }
    else {
-      char databuf[nbufs][bufsize];
       gettimeofday(&tInitial, NULL); // Start round-trip timer
       for (int i = 0; i < iterations; i++){ 
          write(sd, databuf, nbufs * bufsize); // sd: socket descriptor 
@@ -81,7 +78,7 @@ int main(int argc, char **argv) {
 
    gettimeofday(&tInitial, NULL); // Start round-trip timer
 
-   handleScenario(tInitial, tFinal, type, clientSd, iterations, nbufs, bufsize); // Run test
+   handleScenario(tInitial, tFinal, type, clientSd, iterations, nbufs, bufsize); // Run tests
 
    // Calculate and print data transmission time in microseconds
    double tLap = (tFinal.tv_sec - tInitial.tv_sec) * 1000000 + (tFinal.tv_usec - tInitial.tv_usec); // usec
@@ -94,8 +91,7 @@ int main(int argc, char **argv) {
 
    // Calculate and print total round-trip time in microseconds
    double tTotal = (tFinal.tv_sec - tInitial.tv_sec) * 1000000 + (tFinal.tv_usec - tInitial.tv_usec); // usec
-   std::cout << "round-trip time = " << tTotal << " usec, ";
-   std::cerr << "#reads = " << count << std::endl;
+   std::cout << "round-trip time = " << tTotal << " usec, " << "#reads = " << count << std::endl;
 
    close(clientSd);
 }

@@ -1,0 +1,54 @@
+Test 1
+Test 1: data transmission time = 148160 usec, round-trip time = 148517 usec, #reads = 21501
+Test 1: data transmission time = 115961 usec, round-trip time = 119658 usec, #reads = 21190
+Test 1: data transmission time = 104194 usec, round-trip time = 104486 usec, #reads = 21432
+Averages: 122772, 124220, 21374
+Test 2: data transmission time = 95243 usec, round-trip time = 98409 usec, #reads = 20129
+Test 2: data transmission time = 58553 usec, round-trip time = 61872 usec, #reads = 20076
+Test 2: data transmission time = 83709 usec, round-trip time = 86762 usec, #reads = 20119
+Averages: 79168, 82348, 20108
+Test 3: data transmission time = 87344 usec, round-trip time = 89619 usec, #reads = 20126
+Test 3: data transmission time = 103254 usec, round-trip time = 105994 usec, #reads = 20098
+Test 3: data transmission time = 112051 usec, round-trip time = 116395 usec, #reads = 20121
+Averages: 100883, 104003, 20115
+
+Test 2
+Test 1: data transmission time = 209655 usec, round-trip time = 209888 usec, #reads = 23921
+Test 1: data transmission time = 210477 usec, round-trip time = 215138 usec, #reads = 22153
+Test 1: data transmission time = 216953 usec, round-trip time = 220095 usec, #reads = 23154
+Averages: 212362, 215040, 23076
+Test 2: data transmission time = 94958 usec, round-trip time = 97628 usec, #reads = 20107
+Test 2: data transmission time = 34234 usec, round-trip time = 38978 usec, #reads = 20173
+Test 2: data transmission time = 60481 usec, round-trip time = 65093 usec, #reads = 20150
+Averages: 63224, 67233, 20143
+Test 3: data transmission time = 53203 usec, round-trip time = 55385 usec, #reads = 20112
+Test 3: data transmission time = 65727 usec, round-trip time = 71053 usec, #reads = 20101
+Test 3: data transmission time = 55585 usec, round-trip time = 60271 usec, #reads = 20111
+Averages: 58172, 62386, 20108
+
+Test 3
+Test 1: data transmission time = 449748 usec, round-trip time = 450156 usec, #reads = 26061
+Test 1: data transmission time = 403542 usec, round-trip time = 404640 usec, #reads = 25415
+Test 1: data transmission time = 420642 usec, round-trip time = 420804 usec, #reads = 25693
+Averages: 424644, 425200, 25723
+Test 2: data transmission time = 51179 usec, round-trip time = 54596 usec, #reads = 20340
+Test 2: data transmission time = 53905 usec, round-trip time = 54853 usec, #reads = 20138
+Test 2: data transmission time = 73990 usec, round-trip time = 75386 usec, #reads = 20115
+Averages: 59691, 61611, 20197
+Test 3: data transmission time = 40384 usec, round-trip time = 44734 usec, #reads = 20116
+Test 3: data transmission time = 61190 usec, round-trip time = 69668 usec, #reads = 20114
+Test 3: data transmission time = 55657 usec, round-trip time = 61212 usec, #reads = 20132
+Averages: 52410, 58538, 20120
+
+Test 1: data transmission time = 115251 usec, round-trip time = 117560 usec, #reads = 22085
+Test 1: data transmission time = 101380 usec, round-trip time = 101782 usec, #reads = 21079
+Test 1: data transmission time = 101555 usec, round-trip time = 101731 usec, #reads = 21538
+Averages: 106062, 107024
+Test 2: data transmission time = 41812 usec, round-trip time = 46909 usec, #reads = 20144
+Test 2: data transmission time = 80313 usec, round-trip time = 83297 usec, #reads = 20129
+Test 2: data transmission time = 52314 usec, round-trip time = 57047 usec, #reads = 20083
+Averages: 58146, 62418
+Test 3: data transmission time = 68408 usec, round-trip time = 74160 usec, #reads = 20121
+Test 3: data transmission time = 94368 usec, round-trip time = 99531 usec, #reads = 20116
+Test 3: data transmission time = 59314 usec, round-trip time = 65660 usec, #reads = 20091
+Averages: 74029, 79783
