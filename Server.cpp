@@ -34,11 +34,6 @@ void *serverThreadFunction(void *data_param) {
    }
    gettimeofday(&tFinal, NULL); // Stop timer
    write(data->sd, &count, sizeof(count)); // Send number of reads to client as reponse
-   // if (x < 0) {
-   //    std::cerr << "Server: Problem with write: ";
-   //    int errsv = errno;
-   //    std::cerr << errsv << std::endl;
-   // }
 
    close(data->sd);
  
